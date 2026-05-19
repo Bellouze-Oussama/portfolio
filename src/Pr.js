@@ -1,0 +1,144 @@
+import React, { useRef } from 'react';
+import { motion, useInView } from 'framer-motion';
+import { FaGithub, FaExternalLinkAlt } from 'react-icons/fa';
+
+const projects = [
+  {
+    id: 1,
+    emoji: '🎓',
+    title: 'DZ Edu RAG',
+    description:
+      "Assistant pédagogique RAG pour le programme de Français Terminale 3AS algérien. Recherche hybride BM25 + vectorielle + RRF, génération d'exercices avec validation qualité automatique.",
+    tags: ['Python', 'FastAPI', 'Streamlit', 'Qdrant', 'Groq', 'Llama 3.3', 'CamemBERT'],
+    gradient: 'from-violet-900 to-indigo-900',
+    github: 'https://github.com/Bellouze-Oussama/dz-edu-rag',
+    demo: null,
+  },
+  {
+    id: 2,
+    emoji: '🚚',
+    title: 'Transport AI Agent',
+    description:
+      "Agent IA autonome (architecture ReAct custom) pour la gestion de flotte de transport. 11 outils orchestrés par un LLM, intégrations GPS, météo et géocodage temps réel.",
+    tags: ['Python', 'Groq', 'ReAct', 'OpenRouteService', 'OpenMeteo', 'SQLite'],
+    gradient: 'from-blue-900 to-cyan-900',
+    github: 'https://github.com/Bellouze-Oussama/transport-ai-agent',
+    demo: null,
+  },
+  {
+    id: 3,
+    emoji: '💳',
+    title: 'Bank Fraud Detection',
+    description:
+      "Détection de fraude bancaire temps réel sur flux Kafka. Comparaison XGBoost / Random Forest / Logistic Regression : F1 = 0.80, AUC = 0.976. Génération automatique de rapports HTML.",
+    tags: ['Python', 'Kafka', 'PySpark', 'XGBoost', 'scikit-learn', 'Docker'],
+    gradient: 'from-emerald-900 to-teal-900',
+    github: 'https://github.com/Bellouze-Oussama/bank-fraud-detection',
+    demo: null,
+  },
+  {
+    id: 4,
+    emoji: '🎧',
+    title: 'Sound Anomaly Detection',
+    description:
+      "Détection d'anomalies dans des signaux audio industriels (pompes, ventilateurs) avec un autoencodeur Transformer sur spectrogrammes Mel. Dataset MIMII, accuracy 89.1 %.",
+    tags: ['Python', 'PyTorch', 'Transformers', 'Librosa', 'MIMII', 'Autoencoder'],
+    gradient: 'from-fuchsia-900 to-pink-900',
+    github: 'https://github.com/Bellouze-Oussama/projet-detection-anomalies',
+    demo: null,
+  },
+];
+
+const Projects = () => {
+  const ref = useRef(null);
+  const isInView = useInView(ref, {
+    triggerOnce: false,
+    threshold: 0.2,
+  });
+
+  return (
+    <section id="projects" className="pt-24 relative min-h-screen bg-black px-6 py-20 text-white">
+      <div ref={ref}>
+        {/* Grand titre en arrière-plan */}
+        <h2 className="absolute top-12 left-1/2 transform -translate-x-1/2 text-[120px] text-gray-500 opacity-5 font-bold z-0 pointer-events-none select-none">
+          PROJECTS
+        </h2>
+
+        {/* Titre animé */}
+        <motion.h1
+          className="relative text-4xl md:text-6xl font-bold text-center mb-16 z-10"
+          initial={{ scale: 0.5, opacity: 0 }}
+          animate={isInView ? { scale: 1, opacity: 1 } : { scale: 0.5, opacity: 0 }}
+          transition={{ duration: 1 }}
+        >
+          Projects
+        </motion.h1>
+
+        {/* Grille des projets */}
+        <motion.div
+          className="grid grid-cols-1 md:grid-cols-2 gap-8 z-10 relative max-w-6xl mx-auto"
+          initial={{ opacity: 0, y: 40 }}
+          animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 40 }}
+          transition={{ delay: 0.4, duration: 0.8 }}
+        >
+          {projects.map((proj, idx) => (
+            <motion.div
+              key={proj.id}
+              className="group border border-indigo-600 rounded-lg bg-black shadow-lg hover:shadow-[0_0_25px_rgba(99,102,241,0.7)] transition-transform duration-300 hover:scale-[1.02] overflow-hidden flex flex-col"
+              initial={{ opacity: 0, y: 20 }}
+              animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 20 }}
+              transition={{ delay: 0.6 + idx * 0.15, duration: 0.6 }}
+            >
+              {/* Header avec gradient + emoji */}
+              <div className={`bg-gradient-to-br ${proj.gradient} h-32 flex items-center justify-center`}>
+                <span className="text-6xl">{proj.emoji}</span>
+              </div>
+
+              {/* Contenu */}
+              <div className="p-5 flex flex-col flex-grow">
+                <h3 className="text-xl font-semibold">{proj.title}</h3>
+                <p className="text-gray-300 mt-2 text-sm leading-relaxed">{proj.description}</p>
+
+                {/* Tags */}
+                <div className="flex flex-wrap gap-2 mt-4">
+                  {proj.tags.map((tag) => (
+                    <span
+                      key={tag}
+                      className="text-xs px-2 py-1 rounded-full bg-indigo-900/40 border border-indigo-700 text-gray-200"
+                    >
+                      {tag}
+                    </span>
+                  ))}
+                </div>
+
+                {/* Boutons */}
+                <div className="flex gap-3 mt-5 pt-4 border-t border-gray-800">
+                  <a
+                    href={proj.github}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="flex items-center gap-2 px-3 py-2 rounded bg-[oklch(30%_0.15_268)] text-white text-sm font-semibold hover:shadow-[0_0_15px_rgba(99,102,241,0.7)] transition-all duration-300"
+                  >
+                    <FaGithub /> Code
+                  </a>
+                  {proj.demo && (
+                    <a
+                      href={proj.demo}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="flex items-center gap-2 px-3 py-2 rounded border border-white text-white text-sm font-semibold hover:shadow-[0_0_15px_rgba(99,102,241,0.7)] transition-all duration-300"
+                    >
+                      <FaExternalLinkAlt /> Démo
+                    </a>
+                  )}
+                </div>
+              </div>
+            </motion.div>
+          ))}
+        </motion.div>
+      </div>
+    </section>
+  );
+};
+
+export default Projects;
