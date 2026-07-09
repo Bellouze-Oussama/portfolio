@@ -3,6 +3,7 @@ import { motion } from 'framer-motion';
 import { useInView } from 'react-intersection-observer';
 import profilePic from './assets/profil1.jpg';
 import CountUp from 'react-countup';
+import { useLang } from './LanguageContext';
 
 const textVariants = {
   hidden: { opacity: 0, x: -50 },
@@ -33,6 +34,7 @@ const nameVariants = {
 };
 
 const Home = () => {
+  const { t } = useLang();
   const { ref, inView } = useInView({
     triggerOnce: false,
     threshold: 0.2,
@@ -54,7 +56,7 @@ const Home = () => {
             animate={inView ? 'visible' : 'hidden'}
             custom={0}
           >
-            Hello, I am
+            {t.home.hello}
           </motion.p>
 
           <motion.h1
@@ -75,18 +77,20 @@ const Home = () => {
             custom={2}
           >
             <p className="text-lg md:text-xl text-indigo-200 font-semibold">
-              AI / LLM Engineer Junior · Master 2 IA
+              {t.home.role}
+            </p>
+            <p className="text-sm md:text-base text-indigo-300 font-medium">
+              {t.home.subtitle}
             </p>
             <p className="text-md md:text-lg text-gray-300 leading-relaxed">
-              Je conçois des systèmes <span className="text-white font-medium">RAG</span>, des <span className="text-white font-medium">agents IA</span> et des pipelines de <span className="text-white font-medium">Machine Learning</span>.
-              Mémoire en cours sur la classification d'images médicales par apprentissage fédéré.
+              {t.home.desc}
             </p>
             <p className="text-sm md:text-base text-gray-400">
-              Disponible pour un premier poste en remote dès juin 2026.
+              {t.home.availability}
             </p>
           </motion.div>
 
-          {/* Statistiques honnêtes */}
+          {/* Statistiques */}
           <motion.div
             className="mt-10 px-6 py-4 rounded-lg bg-gradient-to-r from-indigo-900 to-black text-white flex flex-row justify-between items-center w-full max-w-3xl gap-6 shadow-lg"
             initial="hidden"
@@ -96,26 +100,14 @@ const Home = () => {
               visible: { opacity: 1, y: 0, transition: { delay: 0.5, duration: 1 } },
             }}
           >
-            <div className="flex flex-col items-center">
-              <span className="text-3xl font-bold">
-                <CountUp end={4} duration={2.5} suffix="+" enableScrollSpy />
-              </span>
-              <span className="text-sm">Projets IA</span>
-            </div>
-
-            <div className="flex flex-col items-center">
-              <span className="text-3xl font-bold">
-                <CountUp end={2} duration={2.5} enableScrollSpy />
-              </span>
-              <span className="text-sm">Stages</span>
-            </div>
-
-            <div className="flex flex-col items-center">
-              <span className="text-3xl font-bold">
-                <CountUp end={15} duration={2.5} suffix="+" enableScrollSpy />
-              </span>
-              <span className="text-sm">Technos maîtrisées</span>
-            </div>
+            {t.home.stats.map((stat) => (
+              <div key={stat.label} className="flex flex-col items-center text-center">
+                <span className="text-3xl font-bold">
+                  <CountUp end={stat.value} duration={2.5} suffix={stat.suffix} enableScrollSpy />
+                </span>
+                <span className="text-sm">{stat.label}</span>
+              </div>
+            ))}
           </motion.div>
 
           {/* CTA buttons */}
@@ -132,14 +124,14 @@ const Home = () => {
               href="#projects"
               className="px-6 py-2 rounded-lg bg-white text-black font-semibold transition-all duration-300 hover:scale-105 hover:shadow-[0_0_20px_rgba(99,102,241,0.7)]"
             >
-              Voir mes projets
+              {t.home.viewProjects}
             </a>
             <a
               href="/cv.pdf"
               download
               className="px-6 py-2 rounded-lg border border-white text-white font-semibold transition-all duration-300 hover:scale-105 hover:shadow-[0_0_20px_rgba(99,102,241,0.7)]"
             >
-              Télécharger CV
+              {t.home.downloadCV}
             </a>
             <a
               href="https://github.com/Bellouze-Oussama"

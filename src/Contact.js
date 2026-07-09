@@ -9,36 +9,18 @@ import {
   FaMapMarkerAlt,
   FaPaperPlane,
 } from 'react-icons/fa';
-
-const contactCards = [
-  {
-    icon: <FaEnvelope size={28} />,
-    label: 'Email',
-    value: 'bellouzeoussama06@gmail.com',
-    href: 'mailto:bellouzeoussama06@gmail.com',
-  },
-  {
-    icon: <FaPhone size={28} />,
-    label: 'Téléphone',
-    value: '+213 657 96 68 24',
-    href: 'tel:+213657966824',
-  },
-  {
-    icon: <FaLinkedin size={28} />,
-    label: 'LinkedIn',
-    value: 'oussama-bellouze',
-    href: 'https://www.linkedin.com/in/oussama-bellouze-5a7936220',
-  },
-  {
-    icon: <FaGithub size={28} />,
-    label: 'GitHub',
-    value: 'Bellouze-Oussama',
-    href: 'https://github.com/Bellouze-Oussama',
-  },
-];
+import { useLang } from './LanguageContext';
 
 const Contact = () => {
+  const { t } = useLang();
   const { ref, inView } = useInView({ triggerOnce: false, threshold: 0.15 });
+
+  const contactCards = [
+    { icon: <FaEnvelope size={28} />, label: 'Email', value: 'bellouzeoussama06@gmail.com', href: 'mailto:bellouzeoussama06@gmail.com' },
+    { icon: <FaPhone size={28} />, label: t.contact.phone, value: '+213 657 96 68 24', href: 'tel:+213657966824' },
+    { icon: <FaLinkedin size={28} />, label: 'LinkedIn', value: 'oussama-bellouze', href: 'https://www.linkedin.com/in/oussama-bellouze-5a7936220' },
+    { icon: <FaGithub size={28} />, label: 'GitHub', value: 'Bellouze-Oussama', href: 'https://github.com/Bellouze-Oussama' },
+  ];
 
   return (
     <section
@@ -54,7 +36,7 @@ const Contact = () => {
           transition={{ duration: 0.6 }}
           className="text-4xl md:text-6xl font-bold text-center mb-4"
         >
-          Contact
+          {t.contact.title}
         </motion.h1>
 
         <motion.p
@@ -63,8 +45,7 @@ const Contact = () => {
           transition={{ delay: 0.2, duration: 0.6 }}
           className="text-gray-300 text-md md:text-lg text-center max-w-2xl mx-auto mb-12"
         >
-          Disponible pour discuter d'un poste, d'un projet ou simplement échanger sur l'IA.
-          N'hésite pas à me contacter par n'importe quel canal ci-dessous.
+          {t.contact.intro}
         </motion.p>
 
         {/* Grille des 4 contacts */}
@@ -104,7 +85,7 @@ const Contact = () => {
           className="flex items-center justify-center gap-3 mt-10 text-gray-400"
         >
           <FaMapMarkerAlt size={18} />
-          <span>Béjaïa, Algérie · Disponible en remote</span>
+          <span>{t.contact.location}</span>
         </motion.div>
 
         {/* CTA principal : envoyer un email */}
@@ -119,7 +100,7 @@ const Contact = () => {
             className="flex items-center gap-3 px-8 py-3 rounded-lg bg-white text-black font-bold transition-all duration-300 hover:scale-105 hover:shadow-[0_0_25px_rgba(99,102,241,0.8)]"
           >
             <FaPaperPlane />
-            Envoyer un email
+            {t.contact.sendEmail}
           </a>
         </motion.div>
       </div>

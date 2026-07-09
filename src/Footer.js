@@ -1,8 +1,10 @@
 import React from 'react';
 import { FaEnvelope, FaPhone, FaLinkedin, FaGithub } from 'react-icons/fa';
+import { useLang } from './LanguageContext';
 
 const Footer = () => {
-  const year = new Date().getFullYear();
+  const { t } = useLang();
+  const year = 2026;
 
   return (
     <footer className="bg-black text-white py-8 px-6 border-t border-indigo-900">
@@ -13,7 +15,7 @@ const Footer = () => {
             O
           </div>
           <span className="text-sm">
-            Oussama BELLOUZE · AI / LLM Engineer Junior
+            Oussama BELLOUZE · {t.footer.role}
           </span>
         </div>
 
@@ -28,7 +30,7 @@ const Footer = () => {
           </a>
           <a
             href="tel:+213657966824"
-            aria-label="Téléphone"
+            aria-label="Phone"
             className="text-gray-400 hover:text-indigo-300 transition-colors"
           >
             <FaPhone size={20} />

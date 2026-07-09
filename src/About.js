@@ -1,71 +1,15 @@
 import React, { useRef } from 'react';
 import { motion, useInView } from 'framer-motion';
 import { FaBriefcase, FaGraduationCap, FaBullseye } from 'react-icons/fa';
-
-const experiences = [
-  {
-    id: 1,
-    role: 'Stagiaire IA',
-    company: 'BigNova',
-    location: 'Béjaïa, Algérie',
-    period: 'Novembre 2025',
-    description:
-      "Conception et développement de DZ Edu RAG, un assistant pédagogique RAG pour le programme de Français Terminale 3AS algérien. Implémentation d'une recherche hybride BM25 + vectorielle (Qdrant) avec fusion RRF. Intégration de Llama 3.3 70B via Groq, CamemBERT et MXBAI pour les embeddings. Mise en place d'un validateur d'exercices automatique.",
-    tags: ['Python', 'FastAPI', 'Streamlit', 'Qdrant', 'Groq', 'RAG'],
-  },
-  {
-    id: 2,
-    role: 'Stagiaire Développeur Front-End',
-    company: 'Wyze Academy',
-    location: 'France (à distance)',
-    period: 'Juin – Août 2025',
-    description:
-      "Développement d'une plateforme de formation en ligne en équipe agile. Intégration des maquettes Figma en composants React et Next.js avec animations Framer Motion et GSAP. Collaboration distante avec une équipe française.",
-    tags: ['React', 'Next.js', 'Framer Motion', 'GSAP', 'Figma'],
-  },
-];
-
-const formations = [
-  {
-    id: 1,
-    title: 'Master 2 — Intelligence Artificielle',
-    school: 'Université Abderrahmane Mira, Béjaïa',
-    period: '2025 – 2026',
-    detail: 'En cours · Soutenance prévue juin 2026 · Mémoire sur la classification de la rétinopathie diabétique par apprentissage fédéré',
-  },
-  {
-    id: 2,
-    title: 'Master 1 — Intelligence Artificielle',
-    school: 'Université Abderrahmane Mira, Béjaïa',
-    period: '2024 – 2025',
-    detail: "Apprentissage supervisé / non supervisé · Algorithmes de classification et régression · Initiation Computer Vision",
-  },
-  {
-    id: 3,
-    title: 'Cisco Certified Network Associate (CCNA)',
-    school: 'Institut International de Management, Béjaïa',
-    period: '2024 – 2025',
-    detail: 'Réseaux · TCP/IP · Routing & switching · Sécurité réseau',
-  },
-  {
-    id: 4,
-    title: 'Licence — Systèmes Informatiques',
-    school: 'Université Abderrahmane Mira, Béjaïa',
-    period: '2021 – 2024',
-    detail: "PFE : Application mobile de suivi du diabète (Flutter + SQLite)",
-  },
-  {
-    id: 5,
-    title: 'Baccalauréat — Sciences Expérimentales',
-    school: 'Lycée Chahid Slimane BERKAT, Kherrata',
-    period: '2020 – 2021',
-    detail: 'Mention bien · 15.70/20',
-  },
-];
+import { useLang } from './LanguageContext';
 
 const About = () => {
+  const { t } = useLang();
   const ref = useRef(null);
   const isInView = useInView(ref, { triggerOnce: false, threshold: 0.15 });
+
+  const experiences = t.about.experiences;
+  const formations = t.about.formations;
 
   return (
     <section
@@ -81,7 +25,7 @@ const About = () => {
           transition={{ duration: 0.6 }}
           className="text-4xl md:text-6xl font-bold text-center mb-4"
         >
-          About me
+          {t.about.title}
         </motion.h1>
 
         {/* Description perso */}
@@ -91,8 +35,7 @@ const About = () => {
           transition={{ delay: 0.2, duration: 0.6 }}
           className="text-gray-300 text-md md:text-lg leading-relaxed text-center max-w-3xl mx-auto mb-12"
         >
-          Étudiant en Master 2 Intelligence Artificielle à l'Université Abderrahmane Mira de Béjaïa (soutenance juin 2026), passionné par les LLMs, les agents IA et le Machine Learning. Je conçois des systèmes RAG production-ready, des agents autonomes multi-tools et des pipelines de détection en temps réel.
-          Mon mémoire combine Computer Vision médicale et Federated Learning pour la classification de la rétinopathie diabétique.
+          {t.about.intro}
         </motion.p>
 
         {/* Objectif */}
@@ -105,11 +48,8 @@ const About = () => {
           <div className="flex items-start gap-4">
             <FaBullseye size={28} className="text-indigo-400 mt-1 flex-shrink-0" />
             <div>
-              <h3 className="text-xl font-bold mb-2">Ce que je cherche</h3>
-              <p className="text-gray-300 leading-relaxed">
-                Un <span className="text-white font-semibold">premier poste en AI / LLM Engineering</span> ou <span className="text-white font-semibold">ML Engineering</span>, idéalement <span className="text-white font-semibold">en remote</span> pour une entreprise française, européenne francophone ou maghrébine.
-                Disponible à partir de <span className="text-white font-semibold">juin 2026</span>, ouvert au stage de fin d'études dès maintenant.
-              </p>
+              <h3 className="text-xl font-bold mb-2">{t.about.lookingTitle}</h3>
+              <p className="text-gray-300 leading-relaxed">{t.about.lookingText}</p>
             </div>
           </div>
         </motion.div>
@@ -123,13 +63,13 @@ const About = () => {
         >
           <div className="flex items-center gap-3 mb-8 justify-center">
             <FaBriefcase size={28} className="text-indigo-400" />
-            <h2 className="text-2xl md:text-3xl font-bold">Expériences</h2>
+            <h2 className="text-2xl md:text-3xl font-bold">{t.about.expTitle}</h2>
           </div>
 
           <div className="space-y-6 max-w-4xl mx-auto">
             {experiences.map((exp, idx) => (
               <motion.div
-                key={exp.id}
+                key={idx}
                 initial={{ opacity: 0, x: -30 }}
                 animate={isInView ? { opacity: 1, x: 0 } : { opacity: 0, x: -30 }}
                 transition={{ delay: 0.5 + idx * 0.2, duration: 0.6 }}
@@ -166,13 +106,13 @@ const About = () => {
         >
           <div className="flex items-center gap-3 mb-8 justify-center">
             <FaGraduationCap size={28} className="text-indigo-400" />
-            <h2 className="text-2xl md:text-3xl font-bold">Formations</h2>
+            <h2 className="text-2xl md:text-3xl font-bold">{t.about.eduTitle}</h2>
           </div>
 
           <div className="space-y-4 max-w-4xl mx-auto">
             {formations.map((f, idx) => (
               <motion.div
-                key={f.id}
+                key={idx}
                 initial={{ opacity: 0, x: 30 }}
                 animate={isInView ? { opacity: 1, x: 0 } : { opacity: 0, x: 30 }}
                 transition={{ delay: 0.7 + idx * 0.15, duration: 0.5 }}
@@ -203,7 +143,7 @@ const About = () => {
             download
             className="px-8 py-3 rounded-lg bg-white text-black font-semibold transition-all duration-300 hover:scale-105 hover:shadow-[0_0_25px_rgba(99,102,241,0.7)]"
           >
-            Télécharger mon CV
+            {t.about.downloadCV}
           </a>
         </motion.div>
       </div>
