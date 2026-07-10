@@ -22,7 +22,7 @@ const Projects = () => {
     <section id="projects" className="pt-24 relative min-h-screen bg-black px-6 py-20 text-white">
       <div ref={ref}>
         {/* Grand titre en arrière-plan */}
-        <h2 className="absolute top-12 left-1/2 transform -translate-x-1/2 text-[120px] text-gray-500 opacity-5 font-bold z-0 pointer-events-none select-none">
+        <h2 className="absolute top-12 left-1/2 transform -translate-x-1/2 text-[60px] md:text-[120px] text-gray-500 opacity-5 font-bold z-0 pointer-events-none select-none whitespace-nowrap">
           {t.projects.title.toUpperCase()}
         </h2>
 

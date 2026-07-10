@@ -12,7 +12,7 @@ import Footer from './Footer';
 function App() {
   return (
     <LanguageProvider>
-      <div className="App">
+      <div className="App overflow-x-hidden">
         <Navbar />
         <Home />
         <About />

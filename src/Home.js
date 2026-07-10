@@ -92,7 +92,7 @@ const Home = () => {
 
           {/* Statistiques */}
           <motion.div
-            className="mt-10 px-6 py-4 rounded-lg bg-gradient-to-r from-indigo-900 to-black text-white flex flex-row justify-between items-center w-full max-w-3xl gap-6 shadow-lg"
+            className="mt-10 px-3 md:px-6 py-4 rounded-lg bg-gradient-to-r from-indigo-900 to-black text-white flex flex-row justify-between items-center w-full max-w-3xl gap-2 md:gap-6 shadow-lg"
             initial="hidden"
             animate={inView ? 'visible' : 'hidden'}
             variants={{
@@ -102,10 +102,10 @@ const Home = () => {
           >
             {t.home.stats.map((stat) => (
               <div key={stat.label} className="flex flex-col items-center text-center">
-                <span className="text-3xl font-bold">
+                <span className="text-2xl md:text-3xl font-bold">
                   <CountUp end={stat.value} duration={2.5} suffix={stat.suffix} enableScrollSpy />
                 </span>
-                <span className="text-sm">{stat.label}</span>
+                <span className="text-xs md:text-sm">{stat.label}</span>
               </div>
             ))}
           </motion.div>
