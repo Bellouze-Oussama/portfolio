@@ -1,0 +1,389 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Assistant Email IA - Etude de cas | Oussama Bellouze</title>
+<meta name="description" content="Etude de cas : un assistant email IA (n8n + Groq) qui trie, priorise, note les rendez-vous et se valide depuis un dashboard web.">
+</head>
+<body>
+<style>
+  :root {
+    --bg: #f4f7f6;
+    --surface: #ffffff;
+    --surface-2: #eef3f2;
+    --ink: #0e1a18;
+    --muted: #586b67;
+    --line: #dde6e4;
+    --accent: #0f9e92;
+    --accent-deep: #0b7c72;
+    --accent-soft: #dff2ef;
+    --urgent: #d63b41;
+    --urgent-soft: #fbe7e7;
+    --ok: #1f9d5f;
+    --ok-soft: #e2f3e9;
+    --low: #7c8b87;
+    --low-soft: #eceef0;
+    --shadow: 0 1px 2px rgba(14,26,24,.05), 0 8px 24px rgba(14,26,24,.05);
+    --sans: system-ui, -apple-system, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    --mono: ui-monospace, "SF Mono", "Cascadia Code", "Consolas", Menlo, monospace;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #0a1110;
+      --surface: #111c1a;
+      --surface-2: #16211f;
+      --ink: #e8f0ee;
+      --muted: #90a39e;
+      --line: #223330;
+      --accent: #2bc4b5;
+      --accent-deep: #1a9f92;
+      --accent-soft: #123330;
+      --urgent: #f0676c;
+      --urgent-soft: #351a1c;
+      --ok: #4cc684;
+      --ok-soft: #142e20;
+      --low: #8a9a96;
+      --low-soft: #1b2422;
+      --shadow: 0 1px 2px rgba(0,0,0,.3), 0 10px 30px rgba(0,0,0,.35);
+    }
+  }
+  :root[data-theme="light"] {
+    --bg: #f4f7f6; --surface: #ffffff; --surface-2: #eef3f2; --ink: #0e1a18; --muted: #586b67;
+    --line: #dde6e4; --accent: #0f9e92; --accent-deep: #0b7c72; --accent-soft: #dff2ef;
+    --urgent: #d63b41; --urgent-soft: #fbe7e7; --ok: #1f9d5f; --ok-soft: #e2f3e9;
+    --low: #7c8b87; --low-soft: #eceef0; --shadow: 0 1px 2px rgba(14,26,24,.05), 0 8px 24px rgba(14,26,24,.05);
+  }
+  :root[data-theme="dark"] {
+    --bg: #0a1110; --surface: #111c1a; --surface-2: #16211f; --ink: #e8f0ee; --muted: #90a39e;
+    --line: #223330; --accent: #2bc4b5; --accent-deep: #1a9f92; --accent-soft: #123330;
+    --urgent: #f0676c; --urgent-soft: #351a1c; --ok: #4cc684; --ok-soft: #142e20;
+    --low: #8a9a96; --low-soft: #1b2422; --shadow: 0 1px 2px rgba(0,0,0,.3), 0 10px 30px rgba(0,0,0,.35);
+  }
+
+  * { box-sizing: border-box; }
+  body { margin: 0; background: var(--bg); color: var(--ink); font-family: var(--sans); line-height: 1.6; -webkit-font-smoothing: antialiased; }
+  .wrap { max-width: 920px; margin: 0 auto; padding: 0 24px; }
+  section { padding: 56px 0; border-top: 1px solid var(--line); }
+  h1, h2, h3 { text-wrap: balance; line-height: 1.15; margin: 0; }
+  a { color: var(--accent-deep); }
+
+  .eyebrow { font-family: var(--mono); font-size: 12px; letter-spacing: .14em; text-transform: uppercase; color: var(--accent-deep); margin: 0 0 14px; }
+  .lead { color: var(--muted); font-size: 18px; max-width: 60ch; }
+
+  /* HERO */
+  .hero { padding: 72px 0 60px; border-top: none; }
+  .hero h1 { font-size: clamp(34px, 6vw, 56px); font-weight: 800; letter-spacing: -.02em; }
+  .hero h1 .accent { color: var(--accent); }
+  .hero .lead { margin-top: 20px; font-size: clamp(17px, 2.3vw, 20px); }
+  .meta { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 26px; }
+  .meta .tag { font-family: var(--mono); font-size: 12.5px; padding: 6px 11px; border: 1px solid var(--line); border-radius: 999px; background: var(--surface); color: var(--muted); }
+  .meta .tag b { color: var(--ink); font-weight: 600; }
+
+  .stats { display: grid; grid-template-columns: repeat(4, 1fr); gap: 14px; margin-top: 40px; }
+  .stat { background: var(--surface); border: 1px solid var(--line); border-radius: 14px; padding: 18px; box-shadow: var(--shadow); }
+  .stat .n { font-size: 26px; font-weight: 800; letter-spacing: -.01em; }
+  .stat .l { font-family: var(--mono); font-size: 11.5px; text-transform: uppercase; letter-spacing: .08em; color: var(--muted); margin-top: 4px; }
+
+  h2 { font-size: clamp(24px, 3.5vw, 32px); font-weight: 800; letter-spacing: -.015em; }
+  .section-lead { color: var(--muted); margin-top: 12px; max-width: 62ch; }
+
+  /* PROBLEM / SOLUTION split */
+  .split { display: grid; grid-template-columns: 1fr 1fr; gap: 18px; margin-top: 28px; }
+  .panel { background: var(--surface); border: 1px solid var(--line); border-radius: 16px; padding: 24px; box-shadow: var(--shadow); }
+  .panel h3 { font-size: 15px; font-family: var(--mono); text-transform: uppercase; letter-spacing: .08em; margin-bottom: 12px; }
+  .panel.problem h3 { color: var(--urgent); }
+  .panel.solution h3 { color: var(--ok); }
+  .panel ul { margin: 0; padding-left: 18px; }
+  .panel li { margin: 8px 0; }
+
+  /* FEATURES */
+  .grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; margin-top: 30px; }
+  .card { background: var(--surface); border: 1px solid var(--line); border-radius: 16px; padding: 22px; box-shadow: var(--shadow); }
+  .card .ic { width: 38px; height: 38px; border-radius: 10px; display: grid; place-items: center; background: var(--accent-soft); color: var(--accent-deep); font-size: 19px; margin-bottom: 14px; }
+  .card h3 { font-size: 16.5px; font-weight: 700; }
+  .card p { color: var(--muted); font-size: 14.5px; margin: 8px 0 0; }
+
+  /* PIPELINE */
+  .pipe { margin-top: 34px; display: flex; flex-direction: column; gap: 0; }
+  .step { display: grid; grid-template-columns: 44px 1fr; gap: 18px; }
+  .rail { display: flex; flex-direction: column; align-items: center; }
+  .num { width: 44px; height: 44px; border-radius: 50%; background: var(--accent); color: #fff; display: grid; place-items: center; font-family: var(--mono); font-weight: 700; font-size: 15px; flex: none; }
+  .line { width: 2px; flex: 1; background: var(--line); margin: 6px 0; min-height: 20px; }
+  .step:last-child .line { display: none; }
+  .step-body { padding-bottom: 26px; }
+  .step-body h3 { font-size: 17px; font-weight: 700; }
+  .step-body p { color: var(--muted); margin: 6px 0 0; font-size: 14.5px; }
+  .nodes { font-family: var(--mono); font-size: 11.5px; color: var(--accent-deep); margin-top: 8px; display: flex; flex-wrap: wrap; gap: 6px; }
+  .nodes span { background: var(--accent-soft); padding: 3px 8px; border-radius: 6px; }
+  .branch { border-left: 2px dashed var(--accent); margin-top: 10px; padding: 4px 0 4px 14px; }
+  .branch .bt { font-family: var(--mono); font-size: 11.5px; text-transform: uppercase; letter-spacing: .06em; color: var(--muted); }
+
+  /* ARCHITECTURE */
+  .arch { display: grid; grid-template-columns: 1fr auto 1fr; align-items: stretch; gap: 16px; margin-top: 30px; }
+  .wf { background: var(--surface); border: 1px solid var(--line); border-radius: 16px; padding: 22px; box-shadow: var(--shadow); }
+  .wf .k { font-family: var(--mono); font-size: 11.5px; text-transform: uppercase; letter-spacing: .08em; color: var(--muted); }
+  .wf h3 { font-size: 18px; margin: 6px 0 10px; }
+  .wf p { color: var(--muted); font-size: 14px; margin: 0; }
+  .db { display: grid; place-items: center; }
+  .db .box { background: var(--accent); color: #fff; border-radius: 16px; padding: 18px 16px; text-align: center; box-shadow: var(--shadow); }
+  .db .box .e { font-size: 24px; }
+  .db .box .t { font-family: var(--mono); font-size: 12px; margin-top: 6px; }
+  .db .box .s { font-size: 12px; opacity: .85; margin-top: 2px; }
+  .arch .flowlabel { grid-column: 1 / -1; text-align: center; font-family: var(--mono); font-size: 12px; color: var(--muted); margin-top: 4px; }
+
+  /* legend chips */
+  .legend { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 22px; }
+  .chip { font-family: var(--mono); font-size: 12px; font-weight: 600; padding: 5px 12px; border-radius: 999px; display: inline-flex; align-items: center; gap: 7px; }
+  .chip.u { background: var(--urgent-soft); color: var(--urgent); }
+  .chip.n { background: var(--accent-soft); color: var(--accent-deep); }
+  .chip.f { background: var(--low-soft); color: var(--low); }
+
+  /* stack */
+  .stack { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 26px; }
+  .stack .s { font-family: var(--mono); font-size: 13px; padding: 8px 13px; border: 1px solid var(--line); border-radius: 10px; background: var(--surface); }
+  .stack .s b { color: var(--accent-deep); }
+
+  /* challenges */
+  .chal { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin-top: 28px; }
+  .ch { background: var(--surface); border: 1px solid var(--line); border-left: 3px solid var(--accent); border-radius: 12px; padding: 18px; box-shadow: var(--shadow); }
+  .ch h3 { font-size: 15px; font-weight: 700; }
+  .ch p { color: var(--muted); font-size: 14px; margin: 6px 0 0; }
+
+  /* dashboard mock */
+  .mock { margin-top: 26px; background: var(--surface); border: 1px solid var(--line); border-radius: 16px; overflow: hidden; box-shadow: var(--shadow); }
+  .mock .bar { background: var(--accent); color: #fff; padding: 12px 18px; font-weight: 700; font-size: 14px; }
+  .mock table { width: 100%; border-collapse: collapse; font-size: 13.5px; }
+  .mock th { text-align: left; font-family: var(--mono); font-size: 11px; text-transform: uppercase; letter-spacing: .05em; color: var(--muted); padding: 10px 14px; border-bottom: 1px solid var(--line); background: var(--surface-2); }
+  .mock td { padding: 11px 14px; border-bottom: 1px solid var(--line); }
+  .mock tr.urgent td:first-child { box-shadow: inset 3px 0 0 var(--urgent); }
+  .mock .b { display: inline-block; font-family: var(--mono); font-size: 10.5px; font-weight: 700; padding: 2px 8px; border-radius: 999px; }
+  .mock .b.u { background: var(--urgent); color: #fff; }
+  .mock .b.n { background: var(--accent-soft); color: var(--accent-deep); }
+  .mock .act { color: var(--muted); font-family: var(--mono); font-size: 11.5px; }
+
+  /* footer */
+  footer { padding: 54px 0 70px; border-top: 1px solid var(--line); }
+  footer h2 { margin-bottom: 8px; }
+  .contact { display: flex; flex-wrap: wrap; gap: 12px; margin-top: 18px; }
+  .contact a { font-family: var(--mono); font-size: 13.5px; text-decoration: none; padding: 10px 15px; border: 1px solid var(--line); border-radius: 10px; background: var(--surface); color: var(--ink); }
+  .contact a:hover { border-color: var(--accent); color: var(--accent-deep); }
+  .credit { color: var(--muted); font-size: 13px; margin-top: 26px; }
+
+  @media (max-width: 720px) {
+    .stats { grid-template-columns: repeat(2, 1fr); }
+    .split, .grid, .arch, .chal { grid-template-columns: 1fr; }
+    .arch .db .box { max-width: 240px; margin: 0 auto; }
+  }
+</style>
+
+<div class="wrap">
+
+  <header class="hero">
+    <p class="eyebrow">Étude de cas · Automatisation IA</p>
+    <h1>Assistant <span class="accent">Email IA</span> — tri, réponses &amp; rendez-vous en automatique</h1>
+    <p class="lead">Un système qui lit ma boîte mail, comprend chaque message avec une IA, me prévient des urgences, note mes rendez-vous dans l'agenda — et me laisse valider chaque réponse en un clic depuis un tableau de bord web.</p>
+    <div class="meta">
+      <span class="tag"><b>Rôle</b> — Conception &amp; développement</span>
+      <span class="tag"><b>Type</b> — Automatisation / IA appliquée</span>
+      <span class="tag"><b>Année</b> — 2026</span>
+    </div>
+    <div class="stats">
+      <div class="stat"><div class="n">15 min</div><div class="l">Surveillance auto</div></div>
+      <div class="stat"><div class="n">÷30</div><div class="l">Tokens IA économisés</div></div>
+      <div class="stat"><div class="n">1 clic</div><div class="l">Pour envoyer</div></div>
+      <div class="stat"><div class="n">0 €</div><div class="l">Coût des outils</div></div>
+    </div>
+  </header>
+
+  <section>
+    <p class="eyebrow">Le point de départ</p>
+    <h2>Une boîte mail qui déborde, des choses importantes qui passent à la trappe</h2>
+    <div class="split">
+      <div class="panel problem">
+        <h3>Le problème</h3>
+        <ul>
+          <li>Trop d'emails : les messages importants (recruteurs, clients, rendez-vous) se noient dans la masse.</li>
+          <li>Répondre prend du temps et se répète.</li>
+          <li>Des rendez-vous oubliés faute d'être notés tout de suite.</li>
+          <li>Aucune vue claire de « ce qui attend une réponse ».</li>
+        </ul>
+      </div>
+      <div class="panel solution">
+        <h3>La solution</h3>
+        <ul>
+          <li>Une IA lit et <b>classe</b> chaque email (type, priorité, objectif).</li>
+          <li>Une <b>réponse est pré-rédigée</b> automatiquement, prête à valider.</li>
+          <li>Les <b>rendez-vous</b> partent direct dans l'agenda + une note vocale.</li>
+          <li>Un <b>tableau de bord</b> centralise tout : valider, refuser, historique.</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <p class="eyebrow">Ce que ça fait</p>
+    <h2>Fonctionnalités clés</h2>
+    <div class="grid">
+      <div class="card"><div class="ic">🧠</div><h3>Tri &amp; priorité par IA</h3><p>Chaque email est catégorisé et classé urgent, normal ou faible selon des règles adaptées à mon usage.</p></div>
+      <div class="card"><div class="ic">📅</div><h3>Rendez-vous → Agenda</h3><p>Un email qui propose un meeting crée automatiquement l'événement dans Google Agenda.</p></div>
+      <div class="card"><div class="ic">🔊</div><h3>Alertes Telegram + voix</h3><p>Notification instantanée sur Telegram, avec une note vocale pour les rendez-vous.</p></div>
+      <div class="card"><div class="ic">✅</div><h3>Validation humaine</h3><p>Rien n'est envoyé sans moi : je valide ou je refuse (avec la cause) depuis le dashboard.</p></div>
+      <div class="card"><div class="ic">🗂️</div><h3>Extraction d'infos</h3><p>Entreprise, contact et téléphone sont repérés et rangés automatiquement.</p></div>
+      <div class="card"><div class="ic">🛡️</div><h3>Anti-doublon</h3><p>Un email déjà traité n'est jamais retraité — zéro doublon, zéro gaspillage.</p></div>
+    </div>
+    <div class="legend">
+      <span class="chip u">● Urgent</span>
+      <span class="chip n">● Normal</span>
+      <span class="chip f">● Faible</span>
+    </div>
+  </section>
+
+  <section>
+    <p class="eyebrow">Le fonctionnement</p>
+    <h2>Le parcours d'un email, étape par étape</h2>
+    <p class="section-lead">De la réception jusqu'à ma validation, chaque message suit ce chemin automatique.</p>
+    <div class="pipe">
+
+      <div class="step">
+        <div class="rail"><div class="num">1</div><div class="line"></div></div>
+        <div class="step-body">
+          <h3>Réception</h3>
+          <p>Toutes les 15 minutes, le système récupère les emails du jour, non lus, de l'onglet Principale.</p>
+          <div class="nodes"><span>Schedule</span><span>Gmail</span></div>
+        </div>
+      </div>
+
+      <div class="step">
+        <div class="rail"><div class="num">2</div><div class="line"></div></div>
+        <div class="step-body">
+          <h3>Filtre anti-doublon</h3>
+          <p>On compare avec la base et on ne garde que les nouveaux emails — pour ne rien retraiter.</p>
+          <div class="nodes"><span>Data Table</span><span>Code</span></div>
+        </div>
+      </div>
+
+      <div class="step">
+        <div class="rail"><div class="num">3</div><div class="line"></div></div>
+        <div class="step-body">
+          <h3>Analyse par l'IA</h3>
+          <p>Le modèle lit l'email et renvoie un résultat structuré : type, priorité, objectif, infos extraites, et une réponse prête.</p>
+          <div class="nodes"><span>Groq · Llama 3.1</span><span>LLM Chain</span></div>
+        </div>
+      </div>
+
+      <div class="step">
+        <div class="rail"><div class="num">4</div><div class="line"></div></div>
+        <div class="step-body">
+          <h3>Enregistrement</h3>
+          <p>L'email analysé est stocké dans la base interne avec le statut « à valider ».</p>
+          <div class="nodes"><span>Data Table · insert</span></div>
+        </div>
+      </div>
+
+      <div class="step">
+        <div class="rail"><div class="num">5</div><div class="line"></div></div>
+        <div class="step-body">
+          <h3>Si c'est un rendez-vous</h3>
+          <p>Une branche spéciale se déclenche automatiquement.</p>
+          <div class="branch">
+            <div class="bt">🔊 note vocale Telegram → 📅 événement dans l'agenda</div>
+          </div>
+          <div class="nodes"><span>Google TTS</span><span>Telegram</span><span>Google Calendar</span></div>
+        </div>
+      </div>
+
+      <div class="step">
+        <div class="rail"><div class="num">6</div><div class="line"></div></div>
+        <div class="step-body">
+          <h3>Notification</h3>
+          <p>Alerte Telegram immédiate : rouge pour un email urgent, normale sinon.</p>
+          <div class="nodes"><span>IF</span><span>Telegram</span></div>
+        </div>
+      </div>
+
+      <div class="step">
+        <div class="rail"><div class="num">7</div><div class="line"></div></div>
+        <div class="step-body">
+          <h3>Validation humaine</h3>
+          <p>Depuis le dashboard, je valide (la réponse part) ou je refuse (j'écris la cause). L'email bascule dans l'historique.</p>
+          <div class="nodes"><span>Webhook</span><span>Gmail · send</span></div>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <section>
+    <p class="eyebrow">L'architecture</p>
+    <h2>Deux workflows, une base commune</h2>
+    <p class="section-lead">Un traitement en arrière-plan et une application web, reliés non pas par des fils mais par une base de données partagée — comme une usine et son magasin.</p>
+    <div class="arch">
+      <div class="wf">
+        <div class="k">Arrière-plan · toutes les 15 min</div>
+        <h3>① Le classificateur</h3>
+        <p>Lit, analyse avec l'IA, enregistre, notifie. 18 étapes, déclenché par le temps.</p>
+      </div>
+      <div class="db">
+        <div class="box"><div class="e">📦</div><div class="t">emails_traites</div><div class="s">base interne n8n</div></div>
+      </div>
+      <div class="wf">
+        <div class="k">Application web · à la demande</div>
+        <h3>② Le dashboard</h3>
+        <p>Affiche le tableau, envoie les réponses validées, met à jour les statuts. Déclenché par mes clics.</p>
+      </div>
+      <div class="flowlabel">① écrit dans la base &nbsp;·&nbsp; ② lit &amp; met à jour la base</div>
+    </div>
+
+    <div class="mock" aria-hidden="true">
+      <div class="bar">📬 Dashboard — À valider</div>
+      <table>
+        <thead><tr><th>Priorité</th><th>Objet</th><th>Expéditeur</th><th>Action</th></tr></thead>
+        <tbody>
+          <tr class="urgent"><td><span class="b u">Urgent</span></td><td>Réunion projet — disponibilité ?</td><td>Karim — TransMed</td><td class="act">Valider · Refuser</td></tr>
+          <tr><td><span class="b n">Normal</span></td><td>Demande de devis Alger–Oran</td><td>Sofiane M.</td><td class="act">Valider · Refuser</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <section>
+    <p class="eyebrow">Sous le capot</p>
+    <h2>Stack technique</h2>
+    <div class="stack">
+      <div class="s"><b>n8n</b> · orchestration</div>
+      <div class="s"><b>Groq</b> · Llama 3.1</div>
+      <div class="s"><b>Gmail API</b></div>
+      <div class="s"><b>Telegram Bot</b> · texte + voix</div>
+      <div class="s"><b>Google Calendar</b></div>
+      <div class="s"><b>n8n Data Table</b> · base</div>
+      <div class="s"><b>Webhook + HTML/JS</b> · dashboard</div>
+      <div class="s"><b>Google TTS</b> · synthèse vocale</div>
+    </div>
+  </section>
+
+  <section>
+    <p class="eyebrow">L'ingénierie</p>
+    <h2>Les défis résolus</h2>
+    <p class="section-lead">Ce qui a fait la différence entre « une démo » et « un système fiable ».</p>
+    <div class="chal">
+      <div class="ch"><h3>Économie de tokens ÷30</h3><p>Modèle plus léger + contenu tronqué : de ~18 000 à ~500 tokens par email, sans perte de qualité.</p></div>
+      <div class="ch"><h3>Zéro doublon</h3><p>Chaque email est identifié par un ID unique et comparé à la base avant traitement.</p></div>
+      <div class="ch"><h3>Fiabilité de l'IA</h3><p>Des règles déterministes (mots-clés) par-dessus le modèle : un rendez-vous est toujours détecté et priorisé.</p></div>
+      <div class="ch"><h3>Robustesse</h3><p>Contournement d'un service vocal soudainement bloqué, et branches « tolérantes aux erreurs » pour ne jamais casser la chaîne.</p></div>
+    </div>
+  </section>
+
+  <footer class="wrap">
+    <p class="eyebrow">Discutons-en</p>
+    <h2>Oussama Bellouze</h2>
+    <p class="lead">AI Engineer — automatisation, IA appliquée &amp; intégration no-code / low-code.</p>
+    <div class="contact">
+      <a href="mailto:bellouzeoussama06@gmail.com">✉ bellouzeoussama06@gmail.com</a>
+    </div>
+    <p class="credit">Projet personnel — construit de bout en bout sur n8n, de l'analyse IA jusqu'au tableau de bord web.</p>
+  </footer>
+
+</div>
+</body>
+</html>
