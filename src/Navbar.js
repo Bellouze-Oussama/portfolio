@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import { FaGlobe, FaBars, FaTimes } from "react-icons/fa";
 import { useLang } from "./LanguageContext";
 
-const sections = ["home", "about", "projects", "skills", "contact"];
+const sections = ["home", "about", "research", "projects", "skills", "contact"];
 
 const Navbar = () => {
   const [activeSection, setActiveSection] = useState("home");
@@ -45,7 +45,7 @@ const Navbar = () => {
         </div>
 
         {/* Liens desktop */}
-        <ul className="hidden md:flex gap-3 lg:gap-6 font-bold text-white">
+        <ul className="hidden lg:flex gap-3 xl:gap-6 font-bold text-white">
           {sections.map((section) => (
             <li key={section}>
               <a
@@ -77,7 +77,7 @@ const Navbar = () => {
           <button
             onClick={() => setMenuOpen((o) => !o)}
             aria-label="Menu"
-            className="md:hidden text-white text-2xl p-1"
+            className="lg:hidden text-white text-2xl p-1"
           >
             {menuOpen ? <FaTimes /> : <FaBars />}
           </button>
@@ -86,7 +86,7 @@ const Navbar = () => {
 
       {/* Menu déroulant mobile */}
       {menuOpen && (
-        <ul className="md:hidden flex flex-col bg-black border-t border-indigo-900 px-4 pb-4 font-bold text-white">
+        <ul className="lg:hidden flex flex-col bg-black border-t border-indigo-900 px-4 pb-4 font-bold text-white">
           {sections.map((section) => (
             <li key={section}>
               <a

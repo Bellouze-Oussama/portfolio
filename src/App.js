@@ -6,6 +6,7 @@ import Home from './Home';
 import About from './About';
 import Contact from './Contact';
 import Projects from './Pr.js';
+import Research from './Research';
 import Services from './Sr';
 import Footer from './Footer';
 
@@ -16,6 +17,7 @@ function App() {
         <Navbar />
         <Home />
         <About />
+        <Research />
         <Projects />
         <Services />
         <Contact />

@@ -5,6 +5,7 @@ import { useLang } from './LanguageContext';
 
 // Métadonnées non traduites (liens + style), fusionnées par index avec le contenu traduit.
 const projectMeta = [
+  { gradient: 'from-teal-900 to-cyan-900', github: null, demo: 'https://bellouze-oussama.github.io/portfolio/email-ia.html' },
   { gradient: 'from-violet-900 to-indigo-900', github: 'https://github.com/Bellouze-Oussama/dz-edu-rag', demo: null },
   { gradient: 'from-blue-900 to-cyan-900', github: 'https://github.com/Bellouze-Oussama/transport-ai-agent', demo: null },
   { gradient: 'from-emerald-900 to-teal-900', github: 'https://github.com/Bellouze-Oussama/bank-fraud-detection', demo: null },
@@ -75,14 +76,16 @@ const Projects = () => {
 
                 {/* Boutons */}
                 <div className="flex gap-3 mt-5 pt-4 border-t border-gray-800">
-                  <a
-                    href={proj.github}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="flex items-center gap-2 px-3 py-2 rounded bg-[oklch(30%_0.15_268)] text-white text-sm font-semibold hover:shadow-[0_0_15px_rgba(99,102,241,0.7)] transition-all duration-300"
-                  >
-                    <FaGithub /> {t.projects.code}
-                  </a>
+                  {proj.github && (
+                    <a
+                      href={proj.github}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="flex items-center gap-2 px-3 py-2 rounded bg-[oklch(30%_0.15_268)] text-white text-sm font-semibold hover:shadow-[0_0_15px_rgba(99,102,241,0.7)] transition-all duration-300"
+                    >
+                      <FaGithub /> {t.projects.code}
+                    </a>
+                  )}
                   {proj.demo && (
                     <a
                       href={proj.demo}

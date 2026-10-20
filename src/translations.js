@@ -1,7 +1,7 @@
 // Toutes les traductions du portfolio (FR / EN), contenu à jour.
 export const translations = {
   fr: {
-    nav: { home: "Accueil", about: "À propos", projects: "Projets", skills: "Compétences", contact: "Contact" },
+    nav: { home: "Accueil", about: "À propos", research: "Publication", projects: "Projets", skills: "Compétences", contact: "Contact" },
     home: {
       hello: "Bonjour, je suis",
       role: "AI / LLM Engineer & Développeur Full-Stack",
@@ -9,7 +9,7 @@ export const translations = {
       desc: "Je conçois des systèmes RAG, des agents IA et des pipelines de Machine Learning. Actuellement développeur chez Cosmos Hub, j'intègre l'IA dans un ERP en production.",
       availability: "Ouvert aux opportunités en AI / LLM Engineering (remote ou Algérie).",
       stats: [
-        { value: 4, suffix: "+", label: "Projets IA" },
+        { value: 5, suffix: "+", label: "Projets IA" },
         { value: 4, suffix: "", label: "Expériences pro" },
         { value: 15, suffix: "+", label: "Technos" },
       ],
@@ -91,11 +91,29 @@ export const translations = {
         },
       ],
     },
+    research: {
+      title: "Publication",
+      badge: "Conférence IEEE · Article accepté et présenté",
+      paperTitle: "FL-RDDetect: A Federated Hybrid Model for Diabetic Retinopathy Detection",
+      conference: "IEEE 2026 International Conference on Cyber Management and Engineering (CyMaEn 26)",
+      dates: "11 – 13 octobre 2026",
+      place: "Tlemcen, Algérie",
+      description: "Un modèle hybride CNN-Transformer entraîné par apprentissage fédéré pour détecter la rétinopathie diabétique sur des images de fond d'œil, sans que les hôpitaux aient à partager les données de leurs patients. J'ai présenté l'article lors de la conférence à Tlemcen. Publication à venir dans IEEE Xplore.",
+      tags: ["Federated Learning", "Flower", "Deep Learning", "Computer Vision", "Imagerie médicale"],
+      certificate: "Voir le certificat d'auteur",
+      photoCaptions: ["Présentation de l'article à CyMaEn 26", "Photo officielle des participants · Tlemcen"],
+    },
     projects: {
       title: "Projets",
       code: "Code",
       demo: "Démo",
       items: [
+        {
+          emoji: "📬",
+          title: "Assistant Email IA",
+          description: "Système d'automatisation qui lit ma boîte mail, classe chaque email par IA (priorité, objectif), pré-rédige les réponses, ajoute les rendez-vous à l'agenda et se pilote depuis un dashboard web avec validation humaine.",
+          tags: ["n8n", "Groq / Llama 3.1", "Gmail API", "Telegram", "Google Calendar"],
+        },
         {
           emoji: "🎓",
           title: "DZ Edu RAG",
@@ -146,7 +164,7 @@ export const translations = {
   },
 
   en: {
-    nav: { home: "Home", about: "About", projects: "Projects", skills: "Skills", contact: "Contact" },
+    nav: { home: "Home", about: "About", research: "Publication", projects: "Projects", skills: "Skills", contact: "Contact" },
     home: {
       hello: "Hello, I am",
       role: "AI / LLM Engineer & Full-Stack Developer",
@@ -154,7 +172,7 @@ export const translations = {
       desc: "I build RAG systems, AI agents and Machine Learning pipelines. Currently a developer at Cosmos Hub, integrating AI into a production ERP.",
       availability: "Open to opportunities in AI / LLM Engineering (remote or Algeria).",
       stats: [
-        { value: 4, suffix: "+", label: "AI projects" },
+        { value: 5, suffix: "+", label: "AI projects" },
         { value: 4, suffix: "", label: "Experiences" },
         { value: 15, suffix: "+", label: "Technologies" },
       ],
@@ -236,11 +254,29 @@ export const translations = {
         },
       ],
     },
+    research: {
+      title: "Publication",
+      badge: "IEEE conference · Paper accepted and presented",
+      paperTitle: "FL-RDDetect: A Federated Hybrid Model for Diabetic Retinopathy Detection",
+      conference: "IEEE 2026 International Conference on Cyber Management and Engineering (CyMaEn 26)",
+      dates: "October 11 – 13, 2026",
+      place: "Tlemcen, Algeria",
+      description: "A hybrid CNN-Transformer model trained with federated learning to detect diabetic retinopathy from retinal images, without hospitals having to share their patients' data. I presented the paper at the conference in Tlemcen. To appear in IEEE Xplore.",
+      tags: ["Federated Learning", "Flower", "Deep Learning", "Computer Vision", "Medical Imaging"],
+      certificate: "View author certificate",
+      photoCaptions: ["Presenting the paper at CyMaEn 26", "Official participants photo · Tlemcen"],
+    },
     projects: {
       title: "Projects",
       code: "Code",
       demo: "Demo",
       items: [
+        {
+          emoji: "📬",
+          title: "AI Email Assistant",
+          description: "Automation system that reads my inbox, classifies every email with AI (priority, intent), drafts replies, adds meetings to the calendar and is operated from a web dashboard (human-in-the-loop).",
+          tags: ["n8n", "Groq / Llama 3.1", "Gmail API", "Telegram", "Google Calendar"],
+        },
         {
           emoji: "🎓",
           title: "DZ Edu RAG",
