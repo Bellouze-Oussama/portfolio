@@ -115,6 +115,12 @@ export const translations = {
           tags: ["n8n", "Groq / Llama 3.1", "Gmail API", "Telegram", "Google Calendar"],
         },
         {
+          emoji: "🛍️",
+          title: "DZ Boutique : e-commerce COD",
+          description: "Boutique en ligne algérienne en paiement à la livraison : catalogue, panier, commande rapide, frais de livraison par wilaya (58), suivi de commande. Espace propriétaire : tableau de bord des ventes, confirmation et expédition des commandes, retours avec remise en stock, gestion des produits. Démo : proprietaire / demo.",
+          tags: ["Django", "Django REST Framework", "Angular", "TypeScript", "Signals"],
+        },
+        {
           emoji: "🎓",
           title: "DZ Edu RAG",
           description: "Assistant pédagogique RAG pour le programme de Français Terminale 3AS algérien. Recherche hybride BM25 + vectorielle + RRF, génération d'exercices avec validation qualité automatique.",
@@ -276,6 +282,12 @@ export const translations = {
           title: "AI Email Assistant",
           description: "Automation system that reads my inbox, classifies every email with AI (priority, intent), drafts replies, adds meetings to the calendar and is operated from a web dashboard (human-in-the-loop).",
           tags: ["n8n", "Groq / Llama 3.1", "Gmail API", "Telegram", "Google Calendar"],
+        },
+        {
+          emoji: "🛍️",
+          title: "DZ Boutique: COD e-commerce",
+          description: "Algerian cash-on-delivery online store: catalog, cart, one-step checkout, delivery fees per province (58), order tracking. Owner back-office: sales dashboard, order confirmation and shipping, returns with automatic restocking, product management. Demo login: proprietaire / demo.",
+          tags: ["Django", "Django REST Framework", "Angular", "TypeScript", "Signals"],
         },
         {
           emoji: "🎓",

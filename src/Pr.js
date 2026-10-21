@@ -6,6 +6,7 @@ import { useLang } from './LanguageContext';
 // Métadonnées non traduites (liens + style), fusionnées par index avec le contenu traduit.
 const projectMeta = [
   { gradient: 'from-teal-900 to-cyan-900', github: null, demo: 'https://bellouze-oussama.github.io/portfolio/email-ia.html' },
+  { gradient: 'from-rose-900 to-pink-900', github: null, demo: 'https://bellouze-oussama.github.io/portfolio/dz-boutique/' },
   { gradient: 'from-violet-900 to-indigo-900', github: 'https://github.com/Bellouze-Oussama/dz-edu-rag', demo: null },
   { gradient: 'from-blue-900 to-cyan-900', github: 'https://github.com/Bellouze-Oussama/transport-ai-agent', demo: null },
   { gradient: 'from-emerald-900 to-teal-900', github: 'https://github.com/Bellouze-Oussama/bank-fraud-detection', demo: null },
